@@ -234,6 +234,9 @@
     if (supportsExploit(v1ntex_exploit)) {
         [_exploitPickerData addObject:@"v1ntex"];
     }
+    if (supportsExploit(v3ntex_exploit)) {
+        [_exploitPickerData addObject:@"v3ntex"];
+    }
     if ([_exploitPickerData count] == 0) {
         [_exploitPickerData addObject:@"Your device is not supported."];
     }
@@ -460,7 +463,7 @@
 }
 
 - (IBAction)tappedOnAutomaticallySelectExploit:(id)sender {
-    NSArray *allExploits = @[@"async_wake", @"voucher_swap", @"multi_path", @"v1ntex", @"empty_list"];
+    NSArray *allExploits = @[@"async_wake", @"voucher_swap", @"multi_path", @"v1ntex", @"v3ntex", @"empty_list"];
     NSUInteger recommendedExploitInt = [_exploitPickerData indexOfObject:[allExploits objectAtIndex:recommendedJailbreakSupport()]];
     [[NSUserDefaults standardUserDefaults] setInteger:recommendedExploitInt forKey:K_EXPLOIT];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -531,7 +534,7 @@
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-    NSArray *allExploits = @[@"async_wake", @"voucher_swap", @"multi_path", @"v1ntex", @"empty_list"];
+    NSArray *allExploits = @[@"async_wake", @"voucher_swap", @"multi_path", @"v1ntex", @"v3ntex", @"empty_list"];
     NSUInteger recommendedExploitInt = [_exploitPickerData indexOfObject:[allExploits objectAtIndex:row]];
     [[NSUserDefaults standardUserDefaults] setInteger:recommendedExploitInt forKey:K_EXPLOIT];
     [[NSUserDefaults standardUserDefaults] synchronize];
