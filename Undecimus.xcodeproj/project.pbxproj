@@ -548,7 +548,7 @@
 				TargetAttributes = {
 					21C0FC6621369EB700849420 = {
 						CreatedOnToolsVersion = 9.4.1;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -779,8 +779,8 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Undecimus/resources/multi_path.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 62PB6NV7YN;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -809,7 +809,7 @@
 					IOKit,
 					"-w",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = science.xnu.undecimus;
+				PRODUCT_BUNDLE_IDENTIFIER = com.samgisaninja.unc0ver;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -824,8 +824,8 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Undecimus/resources/multi_path.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 62PB6NV7YN;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -854,7 +854,7 @@
 					IOKit,
 					"-w",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = science.xnu.undecimus;
+				PRODUCT_BUNDLE_IDENTIFIER = com.samgisaninja.unc0ver;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";

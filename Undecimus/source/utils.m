@@ -1019,10 +1019,10 @@ NSInteger recommendedJailbreakSupport() {
         return multi_path_exploit;
     else if (supportsExploit(v1ntex_exploit))
         return v1ntex_exploit;
-    else if (supportsExploit(v1ntex_exploit))
-        return v3ntex_exploit;
     else if (supportsExploit(empty_list_exploit))
         return empty_list_exploit;
+    else if (supportsExploit(v3ntex_exploit))
+        return v3ntex_exploit;
     else
         return -1;
 }
