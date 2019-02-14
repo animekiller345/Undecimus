@@ -886,45 +886,6 @@ void jailbreak()
     UPSTAGE();
     
     {
-        // Escape Sandbox.
-        static uint64_t ShenanigansPatch = 0xca13feba37be;
-        
-        LOG("Escaping Sandbox...");
-        SETMESSAGE(NSLocalizedString(@"Failed to escape sandbox.", nil));
-        myProcAddr = get_proc_struct_for_pid(myPid);
-        LOG("myProcAddr = " ADDR, myProcAddr);
-        _assert(ISADDR(myProcAddr), message, true);
-        kernelCredAddr = get_kernel_cred_addr();
-        LOG("kernelCredAddr = " ADDR, kernelCredAddr);
-        _assert(ISADDR(kernelCredAddr), message, true);
-        Shenanigans = ReadKernel64(GETOFFSET(shenanigans));
-        LOG("Shenanigans = " ADDR, Shenanigans);
-        _assert(ISADDR(Shenanigans), message, true);
-        WriteKernel64(GETOFFSET(shenanigans), ShenanigansPatch);
-        myOriginalCredAddr = give_creds_to_process_at_addr(myProcAddr, kernelCredAddr);
-        LOG("myOriginalCredAddr = " ADDR, myOriginalCredAddr);
-        _assert(ISADDR(myOriginalCredAddr), message, true);
-        _assert(setuid(0) == ERR_SUCCESS, message, true);
-        _assert(getuid() == 0, message, true);
-        set_platform_binary(myProcAddr);
-        LOG("Successfully escaped Sandbox.");
-    }
-    
-    UPSTAGE();
-    
-    {
-        // Set HSP4.
-        
-        LOG("Setting HSP4 as TFP0...");
-        SETMESSAGE(NSLocalizedString(@"Failed to set HSP4 as TFP0.", nil));
-        remap_tfp0_set_hsp4(&tfp0);
-        LOG("Successfully set HSP4 as TFP0.");
-        INSERTSTATUS(NSLocalizedString(@"Set HSP4 as TFP0.\n", nil));
-    }
-    
-    UPSTAGE();
-    
-    {
         if (prefs.export_kernel_task_port) {
             // Export kernel task port.
             LOG("Exporting kernel task port...");
@@ -939,37 +900,6 @@ void jailbreak()
             make_host_priv_into_host();
             LOG("Successfully unexported kernel task port.");
             INSERTSTATUS(NSLocalizedString(@"Unexported kernel task port.\n", nil));
-        }
-    }
-    
-    UPSTAGE();
-    
-    {
-        // Write a test file to UserFS.
-        
-        LOG("Writing a test file to UserFS...");
-        SETMESSAGE(NSLocalizedString(@"Failed to write a test file to UserFS.", nil));
-        const char *testFile = [NSString stringWithFormat:@"/var/mobile/test-%lu.txt", time(NULL)].UTF8String;
-        writeTestFile(testFile);
-        LOG("Successfully wrote a test file to UserFS.");
-    }
-    
-    UPSTAGE();
-    
-    {
-        if (prefs.dump_apticket) {
-            NSString *originalFile = @"/System/Library/Caches/apticket.der";
-            NSString *dumpFile = [homeDirectory stringByAppendingPathComponent:@"Documents/apticket.der"];
-            if (![sha1sum(originalFile) isEqualToString:sha1sum(dumpFile)]) {
-                // Dump APTicket.
-                
-                LOG("Dumping APTicket...");
-                SETMESSAGE(NSLocalizedString(@"Failed to dump APTicket.", nil));
-                NSData *fileData = [NSData dataWithContentsOfFile:originalFile];
-                _assert(([fileData writeToFile:dumpFile atomically:YES]), message, true);
-                LOG("Successfully dumped APTicket.");
-            }
-            INSERTSTATUS(NSLocalizedString(@"Dumped APTicket.\n", nil));
         }
     }
     
@@ -1008,6 +938,77 @@ void jailbreak()
     }
     
     UPSTAGE();
+    {
+        // Escape Sandbox.
+        static uint64_t ShenanigansPatch = 0xca13feba37be;
+        
+        LOG("Escaping Sandbox...");
+        SETMESSAGE(NSLocalizedString(@"Failed to escape sandbox.", nil));
+        myProcAddr = get_proc_struct_for_pid(myPid);
+        LOG("myProcAddr = " ADDR, myProcAddr);
+        _assert(ISADDR(myProcAddr), message, true);
+        kernelCredAddr = get_kernel_cred_addr();
+        LOG("kernelCredAddr = " ADDR, kernelCredAddr);
+        _assert(ISADDR(kernelCredAddr), message, true);
+        Shenanigans = ReadKernel64(GETOFFSET(shenanigans));
+        LOG("Shenanigans = " ADDR, Shenanigans);
+        _assert(ISADDR(Shenanigans), message, true);
+        WriteKernel64(GETOFFSET(shenanigans), ShenanigansPatch);
+        myOriginalCredAddr = give_creds_to_process_at_addr(myProcAddr, kernelCredAddr);
+        LOG("myOriginalCredAddr = " ADDR, myOriginalCredAddr);
+        _assert(ISADDR(myOriginalCredAddr), message, true);
+        _assert(setuid(0) == ERR_SUCCESS, message, true);
+        _assert(getuid() == 0, message, true);
+        set_platform_binary(myProcAddr);
+        LOG("Successfully escaped Sandbox.");
+    }
+    
+    UPSTAGE();
+    
+    {
+        // Set HSP4.
+        
+        LOG("Setting HSP4 as TFP0...");
+        SETMESSAGE(NSLocalizedString(@"Failed to set HSP4 as TFP0.", nil));
+        remap_tfp0_set_hsp4(&tfp0);
+        LOG("Successfully set HSP4 as TFP0.");
+        INSERTSTATUS(NSLocalizedString(@"Set HSP4 as TFP0.\n", nil));
+    }
+    
+    UPSTAGE();
+    
+    
+    {
+        // Write a test file to UserFS.
+        
+        LOG("Writing a test file to UserFS...");
+        SETMESSAGE(NSLocalizedString(@"Failed to write a test file to UserFS.", nil));
+        const char *testFile = [NSString stringWithFormat:@"/var/mobile/test-%lu.txt", time(NULL)].UTF8String;
+        writeTestFile(testFile);
+        LOG("Successfully wrote a test file to UserFS.");
+    }
+    
+    UPSTAGE();
+    
+    {
+        if (prefs.dump_apticket) {
+            NSString *originalFile = @"/System/Library/Caches/apticket.der";
+            NSString *dumpFile = [homeDirectory stringByAppendingPathComponent:@"Documents/apticket.der"];
+            if (![sha1sum(originalFile) isEqualToString:sha1sum(dumpFile)]) {
+                // Dump APTicket.
+                
+                LOG("Dumping APTicket...");
+                SETMESSAGE(NSLocalizedString(@"Failed to dump APTicket.", nil));
+                NSData *fileData = [NSData dataWithContentsOfFile:originalFile];
+                _assert(([fileData writeToFile:dumpFile atomically:YES]), message, true);
+                LOG("Successfully dumped APTicket.");
+            }
+            INSERTSTATUS(NSLocalizedString(@"Dumped APTicket.\n", nil));
+        }
+    }
+    
+    UPSTAGE();
+    
     
     {
         // Log slide.
