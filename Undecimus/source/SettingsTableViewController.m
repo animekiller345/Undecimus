@@ -219,20 +219,23 @@
     [toolBar setBarStyle:UIBarStyleDefault];
     _exploitPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0, toolBar.frame.size.height, screenWidth, 200)];
     _exploitPickerData = [[NSMutableArray alloc] init];
-    if (supportsExploit(empty_list_exploit)) {
-        [_exploitPickerData addObject:@"empty_list"];
-    }
-    if (supportsExploit(multi_path_exploit)) {
-        [_exploitPickerData addObject:@"multi_path"];
-    }
     if (supportsExploit(async_wake_exploit)) {
         [_exploitPickerData addObject:@"async_wake"];
     }
     if (supportsExploit(voucher_swap_exploit)) {
         [_exploitPickerData addObject:@"voucher_swap"];
     }
+    if (supportsExploit(multi_path_exploit)) {
+        [_exploitPickerData addObject:@"multi_path"];
+    }
     if (supportsExploit(v1ntex_exploit)) {
         [_exploitPickerData addObject:@"v1ntex"];
+    }
+    if (supportsExploit(empty_list_exploit)) {
+        [_exploitPickerData addObject:@"empty_list"];
+    }
+    if (supportsExploit(v3ntex_exploit)) {
+        [_exploitPickerData addObject:@"v3ntex"];
     }
     if ([_exploitPickerData count] == 0) {
         [_exploitPickerData addObject:@"Your device is not supported."];
@@ -460,8 +463,8 @@
 }
 
 - (IBAction)tappedOnAutomaticallySelectExploit:(id)sender {
-    NSArray *allExploits = @[@"async_wake", @"voucher_swap", @"multi_path", @"v1ntex", @"empty_list"];
-    NSUInteger recommendedExploitInt = [_exploitPickerData indexOfObject:[allExploits objectAtIndex:recommendedJailbreakSupport()]];
+    NSArray *allExploits = @[@"async_wake", @"voucher_swap", @"multi_path", @"v1ntex", @"empty_list", @"v3ntex"];
+    NSUInteger recommendedExploitInt = [allExploits indexOfObject:[_exploitPickerData objectAtIndex:recommendedJailbreakSupport()]];
     [[NSUserDefaults standardUserDefaults] setInteger:recommendedExploitInt forKey:K_EXPLOIT];
     [[NSUserDefaults standardUserDefaults] synchronize];
     [self reloadData];
@@ -531,9 +534,9 @@
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-    NSArray *allExploits = @[@"async_wake", @"voucher_swap", @"multi_path", @"v1ntex", @"empty_list"];
-    NSUInteger recommendedExploitInt = [_exploitPickerData indexOfObject:[allExploits objectAtIndex:row]];
-    [[NSUserDefaults standardUserDefaults] setInteger:recommendedExploitInt forKey:K_EXPLOIT];
+    NSArray *allExploits = @[@"async_wake", @"voucher_swap", @"multi_path", @"v1ntex", @"empty_list", @"v3ntex"];
+    NSUInteger selectedExploitInt = [allExploits indexOfObject:[_exploitPickerData objectAtIndex:row]];
+    [[NSUserDefaults standardUserDefaults] setInteger:selectedExploitInt forKey:K_EXPLOIT];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
