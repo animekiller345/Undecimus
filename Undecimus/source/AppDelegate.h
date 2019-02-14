@@ -14,7 +14,6 @@
 @property (strong, atomic) NSPipe *combinedPipe;
 @property (assign) int orig_stderr;
 @property (assign) int orig_stdout;
-@property NSUInteger recommendedExploitInt;
 
 @end
 
