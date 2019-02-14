@@ -55,6 +55,8 @@
 #include "find_port.h"
 #include "v1ntex_offsets.h"
 #include "v1ntex_exploit.h"
+#include "v3ntex_offsets.h"
+#include "v3ntex_exploit.h"
 
 @interface NSUserDefaults ()
 - (id)objectForKey:(id)arg1 inDomain:(id)arg2;
@@ -630,6 +632,14 @@ kern_return_t v1ntex_callback(task_t kernel_task, kptr_t kbase, void *data) {
     return KERN_SUCCESS;
 }
 
+kern_return_t v3ntex_callback(task_t kernel_task, kptr_t kbase, void *data) {
+    prepare_for_rw_with_fake_tfp0(kernel_task);
+    offsets_init();
+    kernel_base = kbase;
+    kernel_slide = (kernel_base - KERNEL_SEARCH_ADDRESS);
+    return KERN_SUCCESS;
+}
+
 void jailbreak()
 {
     int rv = 0;
@@ -772,6 +782,43 @@ void jailbreak()
                         _assert(false, message, true);
                     }
                     if (v1ntex(v1ntex_callback, NULL, v1ntex_offs) == ERR_SUCCESS &&
+                        MACH_PORT_VALID(tfp0) &&
+                        ISADDR(kernel_base) &&
+                        ISADDR(kernel_slide)) {
+                        exploit_success = true;
+                    }
+                    break;
+                }
+                case v3ntex_exploit: {
+                    const char *kernelCacheDownloadPath = [temporaryDirectory stringByAppendingPathComponent:@"kernel"].UTF8String;
+                    LOG("kernelCacheDownloadPath = %s", kernelCacheDownloadPath);
+                    const char *kernelCacheDownloadedPath = [homeDirectory stringByAppendingPathComponent:@"Documents/kernel"].UTF8String;
+                    LOG("kernelCacheDownloadedPath = %s", kernelCacheDownloadedPath);
+                    const char *kernelCacheFilesystemPath = "/System/Library/Caches/com.apple.kernelcaches/kernelcache";
+                    LOG("kernelCacheFilesystemPath = %s", kernelCacheFilesystemPath);
+                    _assert(clean_file(kernelCacheDownloadPath), message, true);
+                    const char *kernelCachePath = NULL;
+                    if (canRead(kernelCacheFilesystemPath)) {
+                        kernelCachePath = kernelCacheFilesystemPath;
+                        LOG("Found kernelcache in filesystem.");
+                    } else if (canRead(kernelCacheDownloadedPath)) {
+                        kernelCachePath = kernelCacheDownloadedPath;
+                        LOG("Found kernelcache in documents.");
+                    } else {
+                        LOG("Downloading kernelcache from Apple...");
+                        NOTICE(NSLocalizedString(@"Downloading kernelcache from Apple. This may take a while.", nil), false, false);
+                        _assert(grabkernel((char *)kernelCacheDownloadPath) == ERR_SUCCESS, message, true);
+                        _assert(rename(kernelCacheDownloadPath, kernelCacheDownloadedPath) == ERR_SUCCESS, message, true);
+                        kernelCachePath = kernelCacheDownloadedPath;
+                        LOG("Successfully downloaded kernelcache from Apple.");
+                    }
+                    LOG("kernelCachePath = %s", kernelCachePath);
+                    v3ntex_offsets *v3ntex_offs = NULL;
+                    if ((v3ntex_offs = get_v3ntex_offsets(kernelCachePath)) == NULL) {
+                        _assert(clean_file(kernelCacheDownloadedPath), message, true);
+                        _assert(false, message, true);
+                    }
+                    if (v3ntex(v3ntex_callback, NULL, v3ntex_offs) == ERR_SUCCESS &&
                         MACH_PORT_VALID(tfp0) &&
                         ISADDR(kernel_base) &&
                         ISADDR(kernel_slide)) {
