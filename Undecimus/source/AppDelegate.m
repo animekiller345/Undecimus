@@ -108,50 +108,7 @@
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
     if ([[NSUserDefaults standardUserDefaults] objectForKey:K_EXPLOIT] == nil) {
-        NSMutableArray *supportedExploits = [[NSMutableArray alloc] init];
-        NSArray *allExploits = @[@"async_wake", @"voucher_swap", @"multi_path", @"v1ntex", @"empty_list", @"v3ntex"];
-        if (supportsExploit(async_wake_exploit)) {
-            [supportedExploits addObject:@"async_wake"];
-        }
-        if (supportsExploit(voucher_swap_exploit)) {
-            [supportedExploits addObject:@"voucher_swap"];
-        }
-        if (supportsExploit(multi_path_exploit)) {
-            [supportedExploits addObject:@"multi_path"];
-        }
-        if (supportsExploit(v1ntex_exploit)) {
-            [supportedExploits addObject:@"v1ntex"];
-        }
-        if (supportsExploit(empty_list_exploit)) {
-            [supportedExploits addObject:@"empty_list"];
-        }
-        if (supportsExploit(v3ntex_exploit)) {
-            [supportedExploits addObject:[NSString stringWithFormat:@"v3ntex"]];
-        }
-        switch ([allExploits indexOfObject:[supportedExploits objectAtIndex:0]]) {
-            case 0:
-                _recommendedExploitInt = 2;
-                break;
-            case 1:
-                _recommendedExploitInt = 3;
-                break;
-            case 2:
-                _recommendedExploitInt = 1;
-                break;
-            case 3:
-                _recommendedExploitInt = 4;
-                break;
-            case 4:
-                _recommendedExploitInt = 0;
-                break;
-            case 5:
-                _recommendedExploitInt = 5;
-                break;
-            default:
-                _recommendedExploitInt = -1;
-                break;
-        }
-        [[NSUserDefaults standardUserDefaults] setInteger:_recommendedExploitInt forKey:K_EXPLOIT];
+        [[NSUserDefaults standardUserDefaults] setInteger:recommendedJailbreakSupport() forKey:K_EXPLOIT];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
     if ([[NSUserDefaults standardUserDefaults] objectForKey:K_DISABLE_AUTO_UPDATES] == nil) {
