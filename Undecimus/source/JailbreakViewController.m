@@ -828,10 +828,10 @@ void jailbreak()
     {
         // Initialize patchfinder64.
         
-        LOG("Initializing patchfinder64...");
+        /* LOG("Initializing patchfinder64...");
         SETMESSAGE(NSLocalizedString(@"Failed to initialize patchfinder64.", nil));
         _assert(init_kernel(kread, kernel_base, NULL) == ERR_SUCCESS, message, true);
-        LOG("Successfully initialized patchfinder64.");
+        LOG("Successfully initialized patchfinder64."); */
     }
     
     UPSTAGE();
@@ -840,7 +840,9 @@ void jailbreak()
         // Find offsets.
         
         LOG("Finding offsets...");
-#define PF(x) do { \
+        SETOFFSET(shenanigans, 0xFFFFFFF008903CE0);
+        SETOFFSET(kernel_task, 0xFFFFFFF008872200);
+/*#define PF(x) do { \
         SETMESSAGE(NSLocalizedString(@"Failed to find " #x " offset.", nil)); \
         SETOFFSET(x, find_ ##x()); \
         LOG(#x " = " ADDR " + " ADDR, GETOFFSET(x) - kernel_slide, kernel_slide); \
@@ -864,6 +866,7 @@ void jailbreak()
             PF(fs_lookup_snapshot_metadata_by_name_and_return_name);
             PF(apfs_jhash_getvnode);
         }
+         */
 #undef PF
         found_offsets = true;
         LOG("Successfully found offsets.");
@@ -871,14 +874,14 @@ void jailbreak()
     
     UPSTAGE();
     
-    {
+    /*{
         // Deinitialize patchfinder64.
         
         LOG("Deinitializing patchfinder64...");
         SETMESSAGE(NSLocalizedString(@"Failed to deinitialize patchfinder64.", nil));
         term_kernel();
         LOG("Successfully deinitialized patchfinder64.");
-    }
+    } */
     
     UPSTAGE();
     
