@@ -840,8 +840,8 @@ void jailbreak()
         // Find offsets.
         
         LOG("Finding offsets...");
-        SETOFFSET(shenanigans, 0xFFFFFFF008903CE0 + kernel_slide);
-        SETOFFSET(kernel_task, 0xFFFFFFF008872200 + kernel_slide);
+        SETOFFSET(shenanigans, 0xFFFFFFF00890BC40 + kernel_slide); 
+        SETOFFSET(kernel_task, 0xFFFFFFF00887A200 + kernel_slide);
 /*#define PF(x) do { \
         SETMESSAGE(NSLocalizedString(@"Failed to find " #x " offset.", nil)); \
         SETOFFSET(x, find_ ##x()); \
