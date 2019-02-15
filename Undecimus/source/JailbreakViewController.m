@@ -910,6 +910,17 @@ void jailbreak()
     }
     
     UPSTAGE();
+    {
+        // Set HSP4.
+        
+        LOG("Setting HSP4 as TFP0...");
+        SETMESSAGE(NSLocalizedString(@"Failed to set HSP4 as TFP0.", nil));
+        remap_tfp0_set_hsp4(&tfp0);
+        LOG("Successfully set HSP4 as TFP0.");
+        INSERTSTATUS(NSLocalizedString(@"Set HSP4 as TFP0.\n", nil));
+    }
+    
+    UPSTAGE();
     
     {
         if (prefs.export_kernel_task_port) {
@@ -965,17 +976,6 @@ void jailbreak()
     
     UPSTAGE();
     
-    {
-        // Set HSP4.
-        
-        LOG("Setting HSP4 as TFP0...");
-        SETMESSAGE(NSLocalizedString(@"Failed to set HSP4 as TFP0.", nil));
-        remap_tfp0_set_hsp4(&tfp0);
-        LOG("Successfully set HSP4 as TFP0.");
-        INSERTSTATUS(NSLocalizedString(@"Set HSP4 as TFP0.\n", nil));
-    }
-    
-    UPSTAGE();
     
     
     {
